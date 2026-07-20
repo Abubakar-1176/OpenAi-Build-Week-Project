@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+:root {
+  /* --- Premium Trust Marketplace palette --- */
+  --color-paper: #FAF6F0;        /* warm off-white background */
+  --color-ink: #211F2E;          /* near-black, indigo-tinted text */
+  --color-ink-soft: #58566A;     /* secondary text */
+
+  --color-indigo: #4338CA;       /* primary */
+  --color-indigo-dark: #312E81;  /* primary hover/pressed */
+  --color-indigo-soft: #EEECFB;  /* primary tint (chips, selected bg) */
+
+  --color-orange: #F2662E;       /* accent */
+  --color-orange-dark: #D6501C;  /* accent hover */
+  --color-orange-soft: #FDE9DF;  /* accent tint (badges) */
+
+  --color-border: #E7E1D8;       /* warm greige border */
+  --color-card: #FFFFFF;
+
+  --color-success: #2F9E44;
+  --color-success-soft: #E4F6E8;
+  --color-danger: #DC2626;
+  --color-danger-soft: #FDEAEA;
+
+  --radius-card: 1rem;
+  --radius-control: 0.625rem;
+}
+
+@theme inline {
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+  --color-paper: var(--color-paper);
+
+  --color-primary: var(--color-indigo);
+  --color-primary-hover: var(--color-indigo-dark);
+  --color-primary-soft: var(--color-indigo-soft);
+
+  --color-accent: var(--color-orange);
+  --color-accent-hover: var(--color-orange-dark);
+  --color-accent-soft: var(--color-orange-soft);
+
+  --color-muted: var(--color-ink-soft);
+  --color-border: var(--color-border);
+  --color-card: var(--color-card);
+
+  --color-success: var(--color-success);
+  --color-success-soft: var(--color-success-soft);
+  --color-danger: var(--color-danger);
+  --color-danger-soft: var(--color-danger-soft);
+
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-work-sans);
+  --font-mono: var(--font-jetbrains-mono);
+
+  --radius-card: var(--radius-card);
+  --radius-control: var(--radius-control);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-work-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-fraunces), Georgia, serif;
+}
+
+.font-tabular {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-indigo);
+  outline-offset: 2px;
+}
