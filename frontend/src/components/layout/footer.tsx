@@ -7,7 +7,7 @@ export function Footer() {
         <div className="flex flex-col gap-8 sm:flex-row sm:justify-between">
           <div>
             <span className="font-display text-lg font-semibold text-foreground">
-              Local<span className="text-accent">Link</span>
+              Serv<span className="text-accent">io</span>
             </span>
             <p className="mt-2 max-w-xs text-sm text-muted">
               Find trusted, verified local professionals for the work that keeps
@@ -33,7 +33,7 @@ export function Footer() {
         </div>
 
         <div className="mt-10 border-t border-border pt-6 text-xs text-muted">
-          © {new Date().getFullYear()} LocalLink. All rights reserved.
+          © {new Date().getFullYear()} Servio. All rights reserved.
         </div>
       </div>
     </footer>

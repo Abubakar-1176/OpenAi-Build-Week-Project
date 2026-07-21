@@ -3,6 +3,7 @@ import { Fraunces, Work_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { AiAssistant } from "@/components/ai-assistant";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -24,7 +25,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LocalLink — Find trusted local professionals",
+  title: "Servio — Find trusted local professionals",
   description:
     "Book verified electricians, plumbers, mechanics, tutors, and cleaners near you.",
 };
@@ -43,6 +44,7 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
+        <AiAssistant />
       </body>
     </html>
   );

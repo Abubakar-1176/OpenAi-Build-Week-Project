@@ -75,7 +75,7 @@ export default function RegisterPage() {
       <Card className="w-full">
         <CardHeader>
           <CardTitle>Create your account</CardTitle>
-          <CardDescription>Join LocalLink as a customer or a service provider.</CardDescription>
+          <CardDescription>Join Servio as a customer or a service provider.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="mb-5 grid grid-cols-2 gap-2">

@@ -20,7 +20,7 @@ export function Navbar() {
     <header className="sticky top-0 z-40 border-b border-border bg-paper/90 backdrop-blur supports-[backdrop-filter]:bg-paper/70">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="font-display text-xl font-semibold text-foreground">
-          Local<span className="text-accent">Link</span>
+          Serv<span className="text-accent">io</span>
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm font-medium text-foreground/80 md:flex">

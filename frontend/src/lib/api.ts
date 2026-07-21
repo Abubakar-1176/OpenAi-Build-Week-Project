@@ -7,7 +7,7 @@ export const api = axios.create({
 
 api.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
-    const token = window.localStorage.getItem("locallink_token");
+    const token = window.localStorage.getItem("servio_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -19,8 +19,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (typeof window !== "undefined" && error?.response?.status === 401) {
-      window.localStorage.removeItem("locallink_token");
-      window.localStorage.removeItem("locallink_role");
+      window.localStorage.removeItem("servio_token");
+      window.localStorage.removeItem("servio_role");
     }
     return Promise.reject(error);
   }

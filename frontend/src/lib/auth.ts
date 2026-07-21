@@ -1,8 +1,8 @@
 export type UserRole = "CUSTOMER" | "PROVIDER" | "ADMIN";
 
-const TOKEN_KEY = "locallink_token";
-const ROLE_KEY = "locallink_role";
-const AUTH_CHANGE_EVENT = "locallink-auth-change";
+const TOKEN_KEY = "servio_token";
+const ROLE_KEY = "servio_role";
+const AUTH_CHANGE_EVENT = "servio-auth-change";
 
 function notifyAuthChange() {
   if (typeof window !== "undefined") {

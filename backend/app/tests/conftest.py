@@ -8,7 +8,7 @@ from app.database import Base, get_db
 from app.config import settings
 
 # Separate test database so we never touch dev data
-TEST_DATABASE_URL = settings.DATABASE_URL.rsplit("/", 1)[0] + "/locallink_test_db"
+TEST_DATABASE_URL = settings.DATABASE_URL.rsplit("/", 1)[0] + "/servio_test_db"
 
 engine = create_engine(TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

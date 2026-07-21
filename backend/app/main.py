@@ -5,7 +5,7 @@ from app import models  # noqa: F401  (ensures all models are registered on Base
 from app.routers import auth, users, categories, providers, bookings, reviews, availability, notifications, chatbot, admin
 
 app = FastAPI(
-    title="LocalLink API",
+    title="Servio API",
     description="Local service marketplace connecting customers with verified local providers.",
     version="0.1.0",
 )
@@ -34,9 +34,9 @@ app.include_router(admin.router)
 @app.get("/health", tags=["health"])
 def health_check():
     """Basic liveness check - confirms the API process is up."""
-    return {"status": "ok", "service": "LocalLink API"}
+    return {"status": "ok", "service": "Servio API"}
 
 
 @app.get("/", tags=["health"])
 def root():
-    return {"message": "LocalLink API is running. See /docs for API documentation."}
+    return {"message": "Servio API is running. See /docs for API documentation."}

@@ -1,8 +1,12 @@
+import logging
+
 import httpx
 from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.models.ai_chat_history import AIChatHistory
+
+logger = logging.getLogger("servio.chatbot")
 
 FALLBACK_RESPONSE = (
     "I can't reach the assistant right now. In the meantime: use Search to find "
@@ -11,7 +15,7 @@ FALLBACK_RESPONSE = (
 )
 
 SYSTEM_PROMPT = (
-    "You are the LocalLink customer support assistant. LocalLink is a local service "
+    "You are the Servio customer support assistant. Servio is a local service "
     "marketplace connecting customers with providers (electricians, plumbers, mechanics, "
     "tutors, cleaners). Your only job is to help users understand the platform and guide "
     "them through common actions - searching, booking, cancelling, reviewing. "
@@ -20,34 +24,55 @@ SYSTEM_PROMPT = (
 )
 
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-OPENROUTER_MODEL = "deepseek/deepseek-r1-0528:free"
 
 
 def _call_llm(message: str) -> str:
-    """Calls the configured LLM API. Raises on any failure - caller handles fallback."""
-    if not settings.AI_API_KEY:
-        raise RuntimeError("AI_API_KEY not configured")
+    """Call OpenRouter's OpenAI-compatible chat completions endpoint.
+
+    Raises on any failure - the caller is responsible for falling back.
+    """
+    api_key = settings.openrouter_key
+    if not api_key:
+        raise RuntimeError(
+            "OPENROUTER_API_KEY is not configured. Add it to backend/.env "
+            "(get a key at https://openrouter.ai/keys)."
+        )
 
     response = httpx.post(
         OPENROUTER_API_URL,
         headers={
-            "Authorization": f"Bearer {settings.AI_API_KEY}",
+            "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
-            "HTTP-Referer": "http://localhost:3000",
-            "X-Title": "LocalLink",
+            # OpenRouter uses these for dashboard attribution; they are optional.
+            "HTTP-Referer": settings.OPENROUTER_SITE_URL,
+            "X-Title": settings.OPENROUTER_APP_NAME,
         },
         json={
-            "model": OPENROUTER_MODEL,
-            "max_tokens": 200,
-            "system": SYSTEM_PROMPT,
-            "messages": [{"role": "user", "content": message}],
+            "model": settings.OPENROUTER_MODEL,
+            "max_tokens": 300,
+            # OpenRouter is OpenAI-compatible: the system prompt is a message
+            # with role "system", NOT a top-level "system" field (that is the
+            # Anthropic-native format and is silently ignored here).
+            "messages": [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": message},
+            ],
         },
-        timeout=10.0,
+        timeout=settings.OPENROUTER_TIMEOUT_SECONDS,
     )
     response.raise_for_status()
     data = response.json()
-    answer = data["choices"][0]["message"]["content"].strip()
-   
+
+    # Surface OpenRouter's own error envelope (it can return HTTP 200 with an
+    # "error" body for e.g. invalid model or insufficient credits).
+    if "error" in data:
+        raise RuntimeError(f"OpenRouter error: {data['error']}")
+
+    try:
+        answer = data["choices"][0]["message"]["content"].strip()
+    except (KeyError, IndexError, TypeError) as exc:
+        raise RuntimeError(f"Unexpected OpenRouter response shape: {data}") from exc
+
     if not answer:
         raise RuntimeError("Empty response from LLM")
     return answer
@@ -56,7 +81,15 @@ def _call_llm(message: str) -> str:
 def get_chat_response(db: Session, user_id: int, message: str) -> str:
     try:
         answer = _call_llm(message)
-    except (httpx.TimeoutException, httpx.HTTPError, RuntimeError, ValueError):
+    except httpx.HTTPStatusError as exc:
+        logger.warning(
+            "OpenRouter returned %s: %s",
+            exc.response.status_code,
+            exc.response.text[:500],
+        )
+        answer = FALLBACK_RESPONSE
+    except (httpx.TimeoutException, httpx.HTTPError, RuntimeError, ValueError) as exc:
+        logger.warning("AI assistant call failed: %s", exc)
         answer = FALLBACK_RESPONSE
 
     db.add(AIChatHistory(user_id=user_id, message=message, response=answer))
